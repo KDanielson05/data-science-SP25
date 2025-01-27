@@ -72,9 +72,14 @@ ggplot() +
 
 ```{r q2-task}
 ## TASK: Plot `price`, `carat`, and `cut` below
-diamonds %>% 
+diamonds %>%
 ggplot() +
   geom_point(aes(x = carat, y = price, color = cut))
+
+##OR this is another format
+# diamonds %>% 
+#   ggplot(aes(carat, price, color = cut)) +
+#   geom_point()
 ```
 
 **Observations**:
