@@ -197,6 +197,8 @@ Fix the following code. What is the mistake here? What is the code trying to acc
 
 ```{r q4-task}
 ## flights %>% filter(dest = LAX) # Uncomment and run to see error
+flights %>% 
+  filter(dest == "LAX")
 ```
 
 The next error is *far more insidious*....
@@ -206,8 +208,10 @@ The next error is *far more insidious*....
 This code doesn't quite what the user intended. What went wrong?
 
 ```{r q5-task}
-flights %>% 
-  filter(dest == "LAX")
+BOS <-
+flights %>% filter(dest == "BOS")
+
+BOS
 ```
 
 It will take practice to get used to when and when not to use quotations. Don't worry---we'll get lots of practice!
@@ -230,7 +234,7 @@ df_q6a
 df_q6b <-
   flights %>% 
   filter(
-    origin == "LGA"
+    origin == "JFK" | origin == "LGA" | origin == "EWR"
   )
 df_q6b
 ```
