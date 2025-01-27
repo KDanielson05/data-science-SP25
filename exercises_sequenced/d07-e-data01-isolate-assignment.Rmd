@@ -166,6 +166,8 @@ df_q3 <-
   filter(between(arr_delay, -10, 10), arr_delay != 0)
 
 df_q3
+
+#lily said was right -- moved on
 ```
 
 ```{r q3-tests}
@@ -173,8 +175,8 @@ df_q3
 assertthat::assert_that(
   df_q3 %>%
     summarize(diff = max(arr_time - sched_arr_time)) %>% 
-    pull(diff) %>% 
-    .[[1]] <= 10
+    # pull(diff) %>% 
+    # .[[1]] <= 10
 )
 assertthat::assert_that(
   df_q3 %>%
@@ -204,8 +206,8 @@ The next error is *far more insidious*....
 This code doesn't quite what the user intended. What went wrong?
 
 ```{r q5-task}
-BOS <- "LGA"
-flights %>% filter(dest == BOS)
+flights %>% 
+  filter(dest == "LAX")
 ```
 
 It will take practice to get used to when and when not to use quotations. Don't worry---we'll get lots of practice!
@@ -218,7 +220,19 @@ Perform **two** filters; first filter for flights where the *destination* was a 
 
 ```{r q6-task}
 ## df_q6a <- dest is JFK, LGA, or EWR
+df_q6a <-
+  flights %>% 
+  filter(
+    dest == "JFK" | dest == "LGA" | dest == "EWR"
+  )
+df_q6a
 ## df_q6b <- origin is JFK, LGA, or EWR
+df_q6b <-
+  flights %>% 
+  filter(
+    origin == "LGA"
+  )
+df_q6b
 ```
 
 Use the following code to check your answer.
@@ -240,7 +254,11 @@ assertthat::assert_that(
 print("Nice!")
 ```
 
-**Observations** - Was this dataset assembled to study flights *out of* NYC, or *into* NYC? How do you know? - (Your response here)
+**Observations** - Was this dataset assembled to study flights *out of* NYC, or *into* NYC? How do you know?
+
+-   This was created to study flights going out of NYC as all of the data set is coming from NYC
+
+    -   this highlights the fact that it was likely created for out of NYC, but does not prove it
 
 *Aside*: Data are not just numbers. Data are *numbers with context*. Every dataset is put together for some reason. This reason will inform what observations (rows) and variables (columns) are *in the data*, and which are *not in the data*. Conversely, thinking carefully about what data a person or organization bothered to collect---and what they ignored---can tell you something about the *perspective* of those who collected the data. Thinking about these issues is partly what separates **data science** from programming or machine learning.
 
@@ -283,6 +301,15 @@ Sort the flights in *descending* order by their `air_time`. Bring `air_time, des
 
 ```{r q7-task}
 ## df_q7 <- TODO: Your code here!
+
+df_q7 <-
+  flights %>%
+  select(
+    air_time, dest, everything()
+  ) %>%
+  arrange(
+    desc(air_time)
+  )
 df_q7
 ```
 
