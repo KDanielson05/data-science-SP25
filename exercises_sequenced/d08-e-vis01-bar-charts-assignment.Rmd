@@ -26,7 +26,7 @@ library(tidyverse)
 
 There are two geometries in ggplot that will make a bar chart:
 
-- `geom_bar()` is used for counting. It takes the `x` aesthetic *only*.
+-   `geom_bar()` is used for counting. It takes the `x` aesthetic *only*.
 
 ```{r}
 ## NOTE: Do not edit this
@@ -35,7 +35,7 @@ tibble(a = c(1, 2, 2, 3, 3, 3)) %>%
   geom_bar()
 ```
 
-- `geom_col()` is used to show `x, y` pairs. It requires both an `x` and `y` aesthetic.
+-   `geom_col()` is used to show `x, y` pairs. It requires both an `x` and `y` aesthetic.
 
 ```{r}
 ## NOTE: Do not edit this
@@ -57,7 +57,7 @@ tibble(a = c(1, 2, 2, 3, 3, 3)) %>%
   geom_col()
 ```
 
-### __q1__ Convert this plot
+### **q1** Convert this plot
 
 Convert the following `geom_bar()` plot into the same visual using `geom_col()`.
 
@@ -65,18 +65,25 @@ Convert the following `geom_bar()` plot into the same visual using `geom_col()`.
 mpg %>%
   ggplot(aes(trans)) +
   geom_bar()
+
+mpg %>% 
+  count(trans) %>% 
+  ggplot(aes(trans, n)) +
+  geom_col()
+    
+  
 ```
 
 ## Fundamentals of the bar chart
 
 There are some common properties of *all* bar charts:
 
-- Values are shown with *bars*
-  - The top of the bar is the data value
-  - The bottom of the bar is at zero
-- The data must be 1:1
-  - That is, for each value of the `x` aesthetic, there is only one value of the `y` aesthetic*
-  
+-   Values are shown with *bars*
+    -   The top of the bar is the data value
+    -   The bottom of the bar is at zero
+-   The data must be 1:1
+    -   That is, for each value of the `x` aesthetic, there is only one value of the `y` aesthetic\*
+
 The requirement of 1:1 data is really important! Look at what happens if we try to plot data that is *not* 1:1:
 
 ```{r}
@@ -91,7 +98,7 @@ tibble(
 
 It's hard to tell what's happening, but the bars for `a == 2` are *stacked*. But if we try to interpret this plot, it seems like `b == 3` when `a == 2`, which is not true.
 
-*There's an exception when we have additional aesthetics such as `fill` or `color`.
+\*There's an exception when we have additional aesthetics such as `fill` or `color`.
 
 For the `mpg` dataset, we can see that the pairs `cty, hwy` clearly don't have this one-to-one property:
 
@@ -100,7 +107,7 @@ For the `mpg` dataset, we can see that the pairs `cty, hwy` clearly don't have t
 mpg %>% filter(cty == 20)
 ```
 
-### __q2__ Inspect this plot
+### **q2** Inspect this plot
 
 The following code attempts to visualize `cty, hwy` from `mpg` using `geom_col()`. There's something fishy about the `hwy` values; answer the questions below.
 
@@ -109,11 +116,10 @@ The following code attempts to visualize `cty, hwy` from `mpg` using `geom_col()
 ```{r q2-task}
 mpg %>%
   ggplot(aes(x = cty, y = hwy)) +
-  geom_col()
+  geom_col(position = "dodge")
 ```
 
-**Observations**:
-- Write your observations here!
+**Observations**: - position = "stacked" is the standard thing for geom_col() meaning that everything was already stacked for highway data. This made it all appear as through there were a lot more highways for each city value than there actually were.
 
 ## Stacked bar charts
 
@@ -147,7 +153,7 @@ Note that this naturally "shrinks" some of the bars so we can fit them near the 
 
 Note that we need to put the `position = "dodge"` argument inside the relevant geometry, and not, say, `ggplot()`.
 
-### __q3__ Compare these plots
+### **q3** Compare these plots
 
 The following are two different visualizations of the `mpg` dataset. Document your observations between the `v1` and `v2` visuals. Then, determine which---`v1` or `v2`---enabled you to make more observations. What was the difference between the two visuals?
 
@@ -158,8 +164,7 @@ mpg %>%
   geom_bar()
 ```
 
-**Observations**:
-- Write your observations here!
+**Observations**: - In this data, SUVs are most numerous, followed by compact cars and midsized cars. The 2seater and minivans are the least two.
 
 ```{r q4-v2}
 ## TODO: Run this code without changing, describe your observations on the data
@@ -168,15 +173,16 @@ mpg %>%
   geom_bar()
 ```
 
-**Observations**:
-- Write your observations here!
+**Observations**: - In this data, SUVs are most numerous, followed by compact cars and midsized cars. The 2seater and minivans are the least two. Pickups are all 4 wheel drive, minivans are all front wheel and 2seaters are all rear wheel. SUVs, compact, midsize and subcompact are all mixed drive type.
 
 **Compare `v1` and `v2`**:
 
-- Which visualization---`v1` or `v2`---enabled you to make more observations?
-- What was the difference between `v1` and `v2`?
+-   Which visualization---`v1` or `v2`---enabled you to make more observations?
+    -   v2 enabled me to make more observations
+-   What was the difference between `v1` and `v2`?
+    -   v2 added in a third different variable that allowed me to make obersvations based on vehicle type
 
-### __q4__ Fix this plot
+### **q4** Fix this plot
 
 The following code has a bug; it does not do what its author intended. Identify and fix the bug. What does the resulting graph tell you about the relation between `manufacturer` and `class` of cars in this dataset?
 
@@ -184,13 +190,12 @@ The following code has a bug; it does not do what its author intended. Identify 
 
 ```{r q4-task}
 mpg %>%
-  ggplot(aes(x = manufacturer, fill = class), position = "dodge") +
-  geom_bar() +
+  ggplot(aes(x = manufacturer, fill = class)) +
+  geom_bar(position = "dodge") +
   theme(axis.text.x = element_text(angle = 270, vjust = 0.5, hjust = 0))
 ```
 
-**Observations**
-- Your observations here!
+**Observations** - The jeep, land rover, lincoln and mercury manufacturers only had SUVs included in this dataset while honda only had subcompact and pontiac only had midsize. All other had a wide variety of different types of cars surveyed.
 
 ## A bit on facets
 
@@ -246,7 +251,7 @@ tibble(
 
 In general, if you have just one variable to facet on, you can use `facet_wrap()` as a default. If you want more control and options over your faceting, use `facet_grid()`. We'll talk more about facets in a future exercise.
 
-### __q5__ Improve this plot
+### **q5** Improve this plot
 
 The following graph is hard to read. Experiment with other choices of faceting to make the visual more convenient to read.
 
@@ -254,11 +259,35 @@ The following graph is hard to read. Experiment with other choices of faceting t
 mpg %>%
   ggplot(aes(x = cyl)) +
   geom_bar() +
-  facet_grid(~ manufacturer)
+  facet_wrap(~manufacturer)
+```
+
+## `tribble()` example
+
+Let's make the same dataset using both `tibble()` and `tribble()` (row-wise tibble creation)
+
+```{r}
+# Column-wise approach
+tibble(
+  x = c(1, 2, 3),
+  y = c("a", "b", "c")
+)
+```
+
+```{r}
+# Row-wise approach
+tribble(
+  ~x, ~y,
+   1, "a",
+   2, "b",
+   3, "c"
+)
 ```
 
 <!-- include-exit-ticket -->
+
 # Exit Ticket
+
 <!-- -------------------------------------------------- -->
 
 Once you have completed this exercise, make sure to fill out the **exit ticket survey**, [linked here](https://docs.google.com/forms/d/e/1FAIpQLSeuq2LFIwWcm05e8-JU84A3irdEL7JkXhMq5Xtoalib36LFHw/viewform?usp=pp_url&entry.693978880=e-vis01-bar-charts-assignment.Rmd).
