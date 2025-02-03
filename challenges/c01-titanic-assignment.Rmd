@@ -131,7 +131,7 @@ df_prop
 df_prop %>% 
   filter(Survived == "Yes") %>% 
   ggplot(aes(Class, Prop, fill = Sex)) +
-  geom_col(position = "dodge")
+  geom_col(position = "dodge", color = "black")  #the black shows the outline and shows how adult and children are still overlayed
 
 ```
 
