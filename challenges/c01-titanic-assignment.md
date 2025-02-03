@@ -258,20 +258,6 @@ df_prop
 ### **q4** Replicate your visual from q3, but display `Prop` in place of `n`. Document your observations, and note any new/different observations you make in comparison with q3. Is there anything *fishy* in your plot?
 
 ``` r
-# df_prop %>%                      #take the df_titanic() dataset
-#   group_by(Class, Sex) %>%          #group_by class and sex at the beginning
-#   # group_by(Class) %>%
-#   filter(Survived == "Yes") %>%     #filter to only those who survived
-#   # summarize(individuals_survived = sum(n)) #%>%
-#   summarise(
-#         individuals_survived = sum(n)    #sum n for those with the same sex
-#   ) %>% 
-#   mutate (
-#     Prop = n/individuals_survived
-#   ) %>%
-#   ggplot(aes(Class, Prop, fill = Sex )) +
-#   geom_col(position = "dodge")
-
 df_prop %>% 
   filter(Survived == "Yes") %>% 
   ggplot(aes(Class, Prop, fill = Sex)) +
