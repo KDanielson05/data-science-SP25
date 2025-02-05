@@ -98,7 +98,7 @@ document your observations.
 ``` r
 ## TASK: Plot `price` vs `carat` below
 diamonds %>% 
-ggplot() +
+  ggplot() +
   geom_point(aes(carat, price))
 ```
 
@@ -116,12 +116,19 @@ ggplot() +
 
 ``` r
 ## TASK: Plot `price`, `carat`, and `cut` below
-diamonds %>% 
-ggplot() +
+diamonds %>%
+  ggplot() +
   geom_point(aes(x = carat, y = price, color = cut))
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/q2-task-1.png)<!-- -->
+
+``` r
+##OR this is another format
+# diamonds %>% 
+#   ggplot(aes(carat, price, color = cut)) +
+#   geom_point()
+```
 
 **Observations**:
 
