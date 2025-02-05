@@ -26,7 +26,7 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 <!-- ------------------------- -->
 
 | Category | Needs Improvement | Satisfactory |
-|------------------|-----------------------------|-------------------------|
+|------------------------|------------------------|------------------------|
 | Effort | Some task **q**'s left unattempted | All task **q**'s attempted |
 | Observed | Did not document observations, or observations incorrect | Documented correct observations based on analysis |
 | Supported | Some observations not clearly supported by analysis | All observations clearly supported by analysis (table, graph, etc.) |
@@ -90,7 +90,9 @@ df_titanic %>% summarize(total = sum(n))
 df_titanic %>% 
   filter (Survived == "Yes") %>%       #filter by survived
   ggplot(aes(Class, n, fill = Sex)) +  #assigns variables
-  geom_col(position = "dodge")         #unstacks male and female data
+  geom_col(position = "dodge")  +      #unstacks male and female data
+  labs(title = "Survival Quantity vs. Class: With Respect to Sex ")
+
 
 #You do not need to group_by or sum(n) as when plotting with aes it will be filtering the categories and pulling anyone who fits the sex, class together -- inherently summing n
 ```
@@ -131,7 +133,8 @@ df_prop
 df_prop %>% 
   filter(Survived == "Yes") %>% 
   ggplot(aes(Class, Prop, fill = Sex)) +
-  geom_col(position = "dodge", color = "black")  #the black shows the outline and shows how adult and children are still overlayed
+  geom_col(position = "dodge", color = "black") +  #black outlines and shows adults and children overlayed
+  labs(title = "Proportion Survived vs. Class")
 
 ```
 
@@ -151,7 +154,8 @@ df_prop %>%
   filter(Survived == "Yes") %>% 
   ggplot(aes(Class, Prop, fill = Sex)) +
   geom_col(position = "dodge") +
-  facet_grid(~Age)
+  facet_grid(~Age) +
+  labs(title = "Proportion Survived vs. Class, Sex and Age")
 ```
 
 **Observations**:
@@ -160,6 +164,81 @@ df_prop %>%
 -   An important thing to note is that this graph creates a bit of confusion with the dataset and possible code computations. When looking at the Q4 graph, it makes it appear as though everyone in first and second class survived. However, this is problematic as when you look at the df_prop data set and the graph created in Q5, not all adults, especially male, in first and second class survived. This could possibly due to the fact that children in both of those classes had a 100% survival rate – these proportions, when combined with adults (who had very low survival rates), if not manipulated correctly could lead to skewing in the data set. (I wonder if it somehow "stacked" the proportions of age as well which led to skewing–this seems unlikely though as the proportions do not exceed 1.0)
 -   If you saw something *fishy* in q4 above, use your new plot to explain the fishy-ness.
     -   My hypothesis about there being a social and cultural bias of prioritizing females and children and those with wealth was proven correct by looking at this graph. This graph shows that a much higher proportion of females survived than the proportion of males, and a much higher proportion of children survived than adults. As mentioned before this is likely because children and women are put first due to cultural norms. Further, as seen, especially within the adult's section of the graphs, class came into play when looking at the proportion of survival. A higher proportion of the men and women in first class survived than those in second and than those in third. This is likely because those of higher status and class are protected in society.
+
+## Work and Manipulations for Presentation
+
+```{r}
+df_titanic %>%
+  filter(Age == "Child") %>%
+  summarize(total_kids = sum(n))
+
+df_titanic %>%
+  filter(Age == "Child", Survived == "Yes") %>%
+  summarize(survived_kids = sum(n))
+```
+
+```{r}
+df_prop2 <-
+  df_titanic %>%
+  select(Age, Survived, n)%>%
+  group_by(Age) %>%
+  mutate(
+    Total2 = sum(n),
+    Proportion = n / Total2
+  ) %>%
+  ungroup()
+df_prop2
+```
+
+```{r}
+df_prop2 %>% 
+  filter(Survived == "Yes") %>%
+  ggplot(aes(Age, Proportion)) +
+  geom_col() +
+  labs(title = "Proportion vs. Age")
+```
+
+```{r}
+df_prop3 <-
+  df_titanic %>%
+  select(Class, Survived, n)%>%
+  group_by(Class) %>%
+  mutate(
+    Total3 = sum(n),
+    Proportion = n / Total3
+  ) %>%
+  ungroup()
+df_prop3
+```
+
+```{r}
+df_prop3 %>% 
+  filter(Survived == "Yes") %>%
+  ggplot(aes(Class, Proportion)) +
+  geom_col() +
+  labs(title = "Proportion Survived vs. Class")
+```
+
+```{r}
+df_prop4 <-
+  df_titanic %>%
+  select(Sex, Survived, n)%>%
+  group_by(Sex) %>%
+  mutate(
+    Total4 = sum(n),
+    Proportion = n / Total4
+  ) %>%
+  ungroup()
+df_prop4
+```
+
+```{r}
+df_prop4 %>% 
+  filter(Survived == "Yes") %>%
+  ggplot(aes(Sex, Proportion)) +
+  geom_col() +
+  labs(title = "Proportion Survived vs. Sex")
+```
 
 # Notes
 
