@@ -29,6 +29,8 @@ Katherine Danielson
     *did* survive, along with aesthetics for `Class`, `Sex`, *and*
     `Age`. Document your observations
     below.](#q5-create-a-plot-showing-the-group-proportion-of-occupants-who-did-survive-along-with-aesthetics-for-class-sex-and-age-document-your-observations-below)
+  - [Work and Manipulations for
+    Presentation](#work-and-manipulations-for-presentation)
 - [Notes](#notes)
 
 *Purpose*: Most datasets have at least a few variables. Part of our task
@@ -176,7 +178,8 @@ df_titanic %>% summarize(total = sum(n))
 df_titanic %>% 
   filter (Survived == "Yes") %>%       #filter by survived
   ggplot(aes(Class, n, fill = Sex)) +  #assigns variables
-  geom_col(position = "dodge")         #unstacks male and female data
+  geom_col(position = "dodge")  +      #unstacks male and female data
+  labs(title = "Survival Quantity vs. Class: With Respect to Sex ")
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q3-task-1.png)<!-- -->
@@ -261,7 +264,8 @@ df_prop
 df_prop %>% 
   filter(Survived == "Yes") %>% 
   ggplot(aes(Class, Prop, fill = Sex)) +
-  geom_col(position = "dodge")
+  geom_col(position = "dodge", color = "black") +  #black outlines and shows adults and children overlayed
+  labs(title = "Proportion Survived vs. Class")
 ```
 
     ## Warning: Removed 2 rows containing missing values or values outside the scale range
@@ -276,21 +280,28 @@ df_prop %>%
   compare who did survive to who didn’t survive within the sex and
   class.
 - From this, we can see that it looks like 100% of males and females in
-  both 1st and 2nd class survived (However, as we will see later in
-  question 5, this is not actually the case). In third class, less than
-  50% of females in this class survived, and roughly only 25% of males
-  survived. In third class, there was a lower proportion of surviving
-  individuals. Due to a lack of conceptualization in total numbers of
-  individuals, you cannot compare the proportions between classes and
-  know for sure if less females survived in third class than in crew
-  (which had a much higher survival rate) as the total population of
-  females in third class could be much larger than that in crew. This is
-  much more visible in the prior graph where it shows the total number
-  of individuals who survived because you can compare the survival
-  between classes. However, the first graph does not actually show the
-  proportion of individuals who survived. It would be ideal to combine
-  these graphs to see what proportion of the original whole survived in
-  relation to the original numbers.
+  both 1st and 2nd class survived (This may seem highly surprising at
+  first; however, as we will see later in question 5, this is not
+  actually the case as the data of adult and child is being overlayed.
+  This overlapping of proportion of survival in both child and adult
+  makes the proportions appear much higher. By having the feature col =
+  “black” in the geom_col code, we can see where exactly the bars
+  overlap. Note that there is no overlap for crew as there were no
+  children in crew, and there appears no overlap for third class females
+  as the female child and female adult survival is about the same.). In
+  third class, less than 50% of females in this class survived, and
+  roughly only 25% of males survived. In third class, there was a lower
+  proportion of surviving individuals. Due to a lack of
+  conceptualization in total numbers of individuals, you cannot compare
+  the proportions between classes and know for sure if less females
+  survived in third class than in crew (which had a much higher survival
+  rate) as the total population of females in third class could be much
+  larger than that in crew. This is much more visible in the prior graph
+  where it shows the total number of individuals who survived because
+  you can compare the survival between classes. However, the first graph
+  does not actually show the proportion of individuals who survived. It
+  would be ideal to combine these graphs to see what proportion of the
+  original whole survived in relation to the original numbers.
 - Is there anything *fishy* going on in your plot?
   - This graph truly highlights the ratio of male-to-female survival and
     a bit of class-to-class survival. When looking at both third class
@@ -316,7 +327,8 @@ df_prop %>%
   filter(Survived == "Yes") %>% 
   ggplot(aes(Class, Prop, fill = Sex)) +
   geom_col(position = "dodge") +
-  facet_grid(~Age)
+  facet_grid(~Age) +
+  labs(title = "Proportion Survived vs. Class, Sex and Age")
 ```
 
     ## Warning: Removed 2 rows containing missing values or values outside the scale range
@@ -345,9 +357,10 @@ df_prop %>%
   could possibly due to the fact that children in both of those classes
   had a 100% survival rate – these proportions, when combined with
   adults (who had very low survival rates), if not manipulated correctly
-  could lead to skewing in the data set. (I wonder if it somehow
-  “stacked” the proportions of age as well which led to skewing–this
-  seems unlikely though as the proportions do not exceed 1.0)
+  could lead to skewing in the data set. By separating the variable
+  “Age” it unoverlaps the two graphs and makes the proportions appear
+  correctly. (See commentary on coloring and overlapping from Q4 for
+  more detail.)
 - If you saw something *fishy* in q4 above, use your new plot to explain
   the fishy-ness.
   - My hypothesis about there being a social and cultural bias of
@@ -362,6 +375,147 @@ df_prop %>%
     in first class survived than those in second and than those in
     third. This is likely because those of higher status and class are
     protected in society.
+
+## Work and Manipulations for Presentation
+
+Disregard for challenge grading. These graphs and manipulations are only
+beneficial for the challenge presentation.
+
+``` r
+df_titanic %>%
+  filter(Age == "Child") %>%
+  summarize(total_kids = sum(n))
+```
+
+    ## # A tibble: 1 × 1
+    ##   total_kids
+    ##        <dbl>
+    ## 1        109
+
+``` r
+df_titanic %>%
+  filter(Age == "Child", Survived == "Yes") %>%
+  summarize(survived_kids = sum(n))
+```
+
+    ## # A tibble: 1 × 1
+    ##   survived_kids
+    ##           <dbl>
+    ## 1            57
+
+``` r
+df_prop2 <-
+  df_titanic %>%
+  select(Age, Survived, n)%>%
+  group_by(Age) %>%
+  mutate(
+    Total2 = sum(n),
+    Proportion = n / Total2
+  ) %>%
+  ungroup()
+df_prop2
+```
+
+    ## # A tibble: 32 × 5
+    ##    Age   Survived     n Total2 Proportion
+    ##    <chr> <chr>    <dbl>  <dbl>      <dbl>
+    ##  1 Child No           0    109     0     
+    ##  2 Child No           0    109     0     
+    ##  3 Child No          35    109     0.321 
+    ##  4 Child No           0    109     0     
+    ##  5 Child No           0    109     0     
+    ##  6 Child No           0    109     0     
+    ##  7 Child No          17    109     0.156 
+    ##  8 Child No           0    109     0     
+    ##  9 Adult No         118   2092     0.0564
+    ## 10 Adult No         154   2092     0.0736
+    ## # ℹ 22 more rows
+
+``` r
+df_prop2 %>% 
+  filter(Survived == "Yes") %>%
+  ggplot(aes(Age, Proportion)) +
+  geom_col() +
+  labs(title = "Proportion vs. Age")
+```
+
+![](c01-titanic-assignment_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
+df_prop3 <-
+  df_titanic %>%
+  select(Class, Survived, n)%>%
+  group_by(Class) %>%
+  mutate(
+    Total3 = sum(n),
+    Proportion = n / Total3
+  ) %>%
+  ungroup()
+df_prop3
+```
+
+    ## # A tibble: 32 × 5
+    ##    Class Survived     n Total3 Proportion
+    ##    <chr> <chr>    <dbl>  <dbl>      <dbl>
+    ##  1 1st   No           0    325     0     
+    ##  2 2nd   No           0    285     0     
+    ##  3 3rd   No          35    706     0.0496
+    ##  4 Crew  No           0    885     0     
+    ##  5 1st   No           0    325     0     
+    ##  6 2nd   No           0    285     0     
+    ##  7 3rd   No          17    706     0.0241
+    ##  8 Crew  No           0    885     0     
+    ##  9 1st   No         118    325     0.363 
+    ## 10 2nd   No         154    285     0.540 
+    ## # ℹ 22 more rows
+
+``` r
+df_prop3 %>% 
+  filter(Survived == "Yes") %>%
+  ggplot(aes(Class, Proportion)) +
+  geom_col() +
+  labs(title = "Proportion Survived vs. Class")
+```
+
+![](c01-titanic-assignment_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+df_prop4 <-
+  df_titanic %>%
+  select(Sex, Survived, n)%>%
+  group_by(Sex) %>%
+  mutate(
+    Total4 = sum(n),
+    Proportion = n / Total4
+  ) %>%
+  ungroup()
+df_prop4
+```
+
+    ## # A tibble: 32 × 5
+    ##    Sex    Survived     n Total4 Proportion
+    ##    <chr>  <chr>    <dbl>  <dbl>      <dbl>
+    ##  1 Male   No           0   1731     0     
+    ##  2 Male   No           0   1731     0     
+    ##  3 Male   No          35   1731     0.0202
+    ##  4 Male   No           0   1731     0     
+    ##  5 Female No           0    470     0     
+    ##  6 Female No           0    470     0     
+    ##  7 Female No          17    470     0.0362
+    ##  8 Female No           0    470     0     
+    ##  9 Male   No         118   1731     0.0682
+    ## 10 Male   No         154   1731     0.0890
+    ## # ℹ 22 more rows
+
+``` r
+df_prop4 %>% 
+  filter(Survived == "Yes") %>%
+  ggplot(aes(Sex, Proportion)) +
+  geom_col() +
+  labs(title = "Proportion Survived vs. Sex")
+```
+
+![](c01-titanic-assignment_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 # Notes
 
