@@ -202,14 +202,13 @@ df_titanic %>%
 
 - In 1st and 2nd Class, the majority of individuals who survived were
   female while in 3rd Class, the division between male and female
-  survivors seemed fairly equal. The Crew had a much larger percentage
-  of male survivors than females. It would be interesting to look into
-  the sex makeup of the passengers and crew to see if maybe the majority
+  survivors seemed fairly equal. The Crew had many more male survivors
+  than females. It would be interesting to look into the sex makeup
+  (proportion) of the passengers and crew to see if maybe the majority
   of the crew was male, so the low female survival was not due to many
-  dying, but rather many not actually functioning as crew. This could
-  also be further analyzed by looking at the proportion of survival
-  within sex to see if there was a social prioritization of females over
-  males.
+  dying, but rather few females as crew. This could also be further
+  analyzed by looking at the proportion of survival within sex to see if
+  there was a social prioritization of females over males.
 
 - By diving deeper and looking at the proportions overall and seeing how
   many people were actually in each class as well would be interesting.
