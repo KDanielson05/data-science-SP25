@@ -1,7 +1,7 @@
 ---
 title: "Aluminum Data"
-author: "(Your name here)"
-date: 2020-
+author: "Katherine Danielson"
+date: 02-11-2025
 output:
   github_document:
     toc: true
@@ -14,17 +14,20 @@ prerequisites:
 In this challenge, you will load a real dataset, wrangle it into tidy form, and perform EDA to learn more about the data.
 
 <!-- include-rubric -->
+
 # Grading Rubric
+
 <!-- -------------------------------------------------- -->
 
 Unlike exercises, **challenges will be graded**. The following rubrics define how you will be graded, both on an individual and team basis.
 
 ## Individual
+
 <!-- ------------------------- -->
 
 | Category | Needs Improvement | Satisfactory |
-|----------|----------------|--------------|
-| Effort | Some task __q__'s left unattempted | All task __q__'s attempted |
+|------------------|-----------------------------|-------------------------|
+| Effort | Some task **q**'s left unattempted | All task **q**'s attempted |
 | Observed | Did not document observations, or observations incorrect | Documented correct observations based on analysis |
 | Supported | Some observations not clearly supported by analysis | All observations clearly supported by analysis (table, graph, etc.) |
 | Assessed | Observations include claims not supported by the data, or reflect a level of certainty not warranted by the data | Observations are appropriately qualified by the quality & relevance of the data and (in)conclusiveness of the support |
@@ -32,10 +35,10 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 | Code Styled | Violations of the [style guide](https://style.tidyverse.org/) hinder readability | Code sufficiently close to the [style guide](https://style.tidyverse.org/) |
 
 ## Submission
+
 <!-- ------------------------- -->
 
 Make sure to commit both the challenge report (`report.md` file) and supporting files (`report_files/` folder) when you are done! Then submit a link to Canvas. **Your Challenge submission is not complete without all files uploaded to GitHub.**
-
 
 ```{r setup}
 library(tidyverse)
@@ -44,6 +47,7 @@ library(tidyverse)
 *Background*: In 1946, scientists at the Bureau of Standards tested a number of Aluminum plates to determine their [elasticity](https://en.wikipedia.org/wiki/Elastic_modulus) and [Poisson's ratio](https://en.wikipedia.org/wiki/Poisson%27s_ratio). These are key quantities used in the design of structural members, such as aircraft skin under [buckling loads](https://en.wikipedia.org/wiki/Buckling). These scientists tested plats of various thicknesses, and at different angles with respect to the [rolling](https://en.wikipedia.org/wiki/Rolling_(metalworking)) direction.
 
 # Loading and Wrangle
+
 <!-- -------------------------------------------------- -->
 
 The `readr` package in the Tidyverse contains functions to load data form many sources. The `read_csv()` function will help us load the data for this challenge.
@@ -60,15 +64,21 @@ df_stang
 
 Note that these data are not tidy! The data in this form are convenient for reporting in a table, but are not ideal for analysis.
 
-### __q1__ Tidy `df_stang` to produce `df_stang_long`. You should have column names `thick, alloy, angle, E, nu`. Make sure the `angle` variable is of correct type. Filter out any invalid values.
+### **q1** Tidy `df_stang` to produce `df_stang_long`. You should have column names `thick, alloy, angle, E, nu`. Make sure the `angle` variable is of correct type. Filter out any invalid values.
 
 *Hint*: You can reshape in one `pivot` using the `".value"` special value for `names_to`.
 
 ```{r q1-task}
 ## TASK: Tidy `df_stang`
 df_stang_long <-
-  df_stang
-
+  df_stang %>% 
+  pivot_longer(
+    names_to = c(".value", "angle"),                       #keeps the values and the first part of the name
+    names_sep = "_",                                             #says what to separate the name by
+    cols = c("E_00", "E_45", "E_90", "nu_00", "nu_45", "nu_90")  #what columns to take from
+  ) %>% 
+  mutate(angle = as.integer(angle)) %>%                    #ensures all angles are integers
+  filter(E >= 0, nu >= 0)                                  #filters out invalid values
 df_stang_long
 ```
 
@@ -94,43 +104,64 @@ print("Very good!")
 ```
 
 # EDA
+
 <!-- -------------------------------------------------- -->
 
 ## Initial checks
+
 <!-- ------------------------- -->
 
-### __q2__ Perform a basic EDA on the aluminum data *without visualization*. Use your analysis to answer the questions under *observations* below. In addition, add your own *specific* question that you'd like to answer about the data---you'll answer it below in q3.
+### **q2** Perform a basic EDA on the aluminum data *without visualization*. Use your analysis to answer the questions under *observations* below. In addition, add your own *specific* question that you'd like to answer about the data---you'll answer it below in q3.
 
 ```{r q2-task}
-##
+glimpse(df_stang_long)
+
+
+df_stang_long %>%       #shows there is not one set of material properties for the Aluminum
+  filter(angle == 0)    #filters only by angle 0
+  
+df_stang_long %>%       #shows there is only one alloy
+  distinct(alloy)
+
+df_stang_long %>%       #shows there are 3 angles
+  distinct(angle)
+
+df_stang_long %>%       #shows there are 4 thicknesses
+  distinct(thick)
 ```
 
 **Observations**:
 
-- Is there "one true value" for the material properties of Aluminum?
-  - (Your response here)
-- How many aluminum alloys are in this dataset? How do you know?
-  - (Your response here)
-- What angles were tested?
-  - (Your response here)
-- What thicknesses were tested?
-  - (Your response here)
-- (Write your own question here)
+-   Is there "one true value" for the material properties of Aluminum?
+    -   No, there is not "one true value" for the material properties of Aluminum. There are multiple different elasticity (E) and Poisson ratio (nu) values for the same thickness and angle. For example, when filtering for angle == 0, at thickness 0.022, there are two different values for nu, and at thickness 0.032, there are different E and nu values.
+-   How many aluminum alloys are in this dataset? How do you know?
+    -   There is only one aluminum alloy in the dataset. I know this as when analyzing the alloy column, "al_24st" is the only distinct value.
+-   What angles were tested?
+    -   There were only three angles tested: 0 degrees, 45 degrees and 90 degrees.
+-   What thicknesses were tested?
+    -   The thicknesses that were tested are 0.022, 0.032, 0.064 and 0.081.
+-   My Question:
+    -   What is the relationship between Poisson's ratio and elasticity? Does angle impact this relationship?
 
 ## Visualize
+
 <!-- ------------------------- -->
 
-### __q3__ Create a visualization to investigate your question from q2 above. Can you find an answer to your question using the dataset? Would you need additional information to answer your question?
+### **q3** Create a visualization to investigate your question from q2 above. Can you find an answer to your question using the dataset? Would you need additional information to answer your question?
 
 ```{r q3-task}
-## TASK: Investigate your question from q1 here
+df_stang_long %>% 
+  ggplot(aes(E, nu, color = as.factor(angle))) +     #plots nu vs. E with angle as a factor
+  geom_point(size = 2) +                             #changes dot size for viewing
+  labs(title = "Poisson's Ratio, Elasticty and Angle")
 ```
 
 **Observations**:
 
-- (Address your question from q1 here)
+-   *What is the relationship between Poisson's ratio and elasticity? Does angle impact this relationship?*
+    -   Using the dataset, my answer can be found. There appears to be a weak positive linear relationship between Poisson's ratio(nu) and the elasticity (E). There is a large amount of variability between the values of nu and E but, generally, as E increases nu increases as well. By adding in angle, it can be determined that there is not an impact from angle on the relationship between Poisson's ratio and elasticity–there are a lot of similar measurements between differing angles. All angles have a lot of variability within their measurements and none have clear trends. For example, when the angle is 90 degrees there is large variability in nu at high E values. Additionally, when the angle is 45 degrees, there is a grouping of the same/similar E values but differing nu values. At angle 0, there appears to be slightly less variation, but there is still a wide spread of data. No angle has a strong impact on the relationship between nu and E. It would be interesting to explore more data and visualizations that bring in the variable thickness. This may help to explain things like the point with the high E value and low nu value with a 90-degree angle–maybe thickness or the fact that there is a large amount of variability within materials due to processing can explain the large variability.
 
-### __q4__ Consider the following statement:
+### **q4** Consider the following statement:
 
 > "A material's property (or material property) is an intensive property of some material, i.e. a physical property that does not depend on the amount of the material."[2]
 
@@ -147,14 +178,15 @@ df_stang_long %>%
 
 **Observations**:
 
-- Does this graph support or contradict the claim above?
-  - (Your response here)
-- Is this evidence *conclusive* one way or another?
-  - (Your response here)
+-   Does this graph support or contradict the claim above?
+    -   This graph contradicts the claim above that the physical properties are not influenced by the amount of material. Looking at the graph above, there is a similar grouping of E and nu values for thicknesses 0.022, 0.032 and 0.064. There is still variability within these thicknesses–each grouping has a wide range of nu values and a range of E values. Additionally, there is some level of distinctness between the groups where those with a thickness of 0.022 appear to generally have a higher E value than those of thickness 0.032. However, the group that truly contradicts the claim above is thickness 0.081. At thickness 0.081, there is a much lower group of E values and a lower set of nu values compared to that of the other thicknesses.
+-   Is this evidence *conclusive* one way or another?
+    -   I do not believe that this evidence is conclusive one way or another even though it contradicts the claim. The data we are looking at is one alloy al_24st, one material Aluminum, and is one set of data. It would be a stretch to say that one "isolated" incident is conclusive of all materials in relation to their material properties changing with amount of material present. Additionally, the level of "difference" in material properties could be viewed as minimal. Each thickness has a large amount of variability within itself. For example, when looking at the 0.022 thickness, the nu value ranges a little over 0.02. Similarly, when looking at thickness 0.064, there appears to be a wide variance (almost 250) in its E values between its highest and lowest point. Thus, while we may believe that the spacing between the 0.022, 0.032 and 0.064 compared to the 0.081 spacing is large, it may not actually be a significant difference in material properties. Further, as we are only looking at four thickness values (0.022, 0.032, 0.064 and 0.081), we can not see a comprehensive level of variance and spread for thickness. By including more thickness values within the dataset, we could better understand if this variance level is large. However, this 0.081 thickness could be an outlier–we need to look to more materials, alloys, and other al_24st samples to truly draw conclusions.
 
 # References
+
 <!-- -------------------------------------------------- -->
 
-[1] Stang, Greenspan, and Newman, "Poisson's ratio of some structural alloys for large strains" (1946) Journal of Research of the National Bureau of Standards, (pdf link)[https://nvlpubs.nist.gov/nistpubs/jres/37/jresv37n4p211_A1b.pdf]
+[1] Stang, Greenspan, and Newman, "Poisson's ratio of some structural alloys for large strains" (1946) Journal of Research of the National Bureau of Standards, (pdf link)[<https://nvlpubs.nist.gov/nistpubs/jres/37/jresv37n4p211_A1b.pdf>]
 
-[2] Wikipedia, *List of material properties*, accessed 2020-06-26, (link)[https://en.wikipedia.org/wiki/List_of_materials_properties]
+[2] Wikipedia, *List of material properties*, accessed 2020-06-26, (link)[<https://en.wikipedia.org/wiki/List_of_materials_properties>]
