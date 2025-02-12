@@ -25,14 +25,11 @@ df_files_all <-
 df_files_all
 ```
 
-
 ```{r, echo=FALSE, results=FALSE, message=FALSE}
 # Load the schedule data
 df_schedule <- read_csv(filename_dep)
 df_schedule 
 ```
-
-
 
 ```{r, echo=FALSE, results=FALSE, message=FALSE}
 # Wrangle the exercise sequence
@@ -60,7 +57,6 @@ df_seq <-
 df_seq 
 ```
 
-
 ```{r, echo=FALSE, results=FALSE, message=FALSE}
 # Final join
 df_report <- 
@@ -77,10 +73,7 @@ df_report <-
 df_report
 ```
 
-
-
 ```{r, echo=FALSE}
 df_report %>% 
   gt()
 ```
-
