@@ -741,7 +741,8 @@ gapminder %>%
     size = 2
   ) +
   facet_wrap(~year) +
-  labs(title = "Population vs. Continent in 1952 and 2007")
+  labs(title = "Population vs. Continent in 1952 and 2007") +
+  scale_y_log10()
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q5-task3-1.png)<!-- -->
@@ -752,24 +753,27 @@ gapminder %>%
   in each continent between 1952 and 1977?”
 - While this representation is not amazing, due to the plethora of
   countries and large outliers, it was the best graph to represent
-  population vs. continent. The overall answer is that the median
-  population increases some over the span of 25 years; however, the
-  majority of growth is seen in outliers, not the continent’s median
-  itself. Over the span of 25 years, Africa remained the continent with
-  the smallest median population, then the Americas, then Oceania, then
-  Europe and then Asia. When thinking intuitively, this may appear to be
-  surprising as a few countries in America definitely have a larger
-  population than that of Oceania. We see this when looking at outliers,
-  in both 1952 and 1977, Mexico, Brazil and the United States all had a
-  higher population than Oceania. Thus, we see that in specifics,
-  country-to-country level comparison may be better than
-  continent-to-continent as there is a large level of variation in
-  population and sizing of different countries and their populations The
-  main country we see an increase in variation of population size is in
-  Asia–this could be due to more countries growing their population
-  sizes. Additionally, Asia has the most notable outliers – India and
-  China – with the outliers being far above the populations of other
-  countries and the medians of all continents. Thus, while this graph
-  does not tell us too much about continent trends, it tells a lot about
-  outlier trends and gives ideas for future country-to-country
-  comparison.
+  population vs. continent. I decided to change the y-axis scale to a
+  log ten scale to show the variation within countries. However, this
+  limits the extremities of many of the outliers and makes some lower
+  outliers appear that are not actually outliers. The overall answer is
+  that the median population increases some over the span of 25 years;
+  however, the majority of growth is seen in outliers, not the
+  continent’s median itself. Over the span of 25 years, Africa remained
+  the continent with the smallest median population, then the Americas,
+  then Oceania, then Europe and then Asia. When thinking intuitively,
+  this may appear to be surprising as a few countries in America
+  definitely have a larger population than that of Oceania. We see this
+  when looking at outliers, in both 1952 and 1977, Mexico, Brazil and
+  the United States all had a higher population than Oceania. Thus, we
+  see that in specifics, country-to-country level comparison may be
+  better than continent-to-continent as there is a large level of
+  variation in population and sizing of different countries and their
+  populations The main country we see an increase in variation of
+  population size is in Asia–this could be due to more countries growing
+  their population sizes. Additionally, Asia has the most notable
+  outliers – India and China – with the outliers being far above the
+  populations of other countries and the medians of all continents.
+  Thus, while this graph does not tell us too much about continent
+  trends, it tells a lot about outlier trends and gives ideas for future
+  country-to-country comparison.
