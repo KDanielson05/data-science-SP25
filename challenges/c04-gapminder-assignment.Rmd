@@ -24,7 +24,7 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 <!-- ------------------------- -->
 
 | Category | Needs Improvement | Satisfactory |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | Effort | Some task **q**'s left unattempted | All task **q**'s attempted |
 | Observed | Did not document observations, or observations incorrect | Documented correct observations based on analysis |
 | Supported | Some observations not clearly supported by analysis | All observations clearly supported by analysis (table, graph, etc.) |
@@ -140,7 +140,8 @@ gapminder %>%
   mutate(continent = fct_reorder(continent, gdpPercap)) %>% 
   ggplot(aes(continent, gdpPercap)) +
   geom_boxplot() +
-  labs(title = "GDP Per Capita vs. Continent")
+  labs(title = "GDP Per Capita vs. Continent") +
+  scale_y_log10()
 ```
 
 ```{r}
@@ -243,7 +244,8 @@ gapminder %>%
      size = 2
   ) +
   facet_wrap(~year) +
-  labs(title = "GDP Per Capita vs. Continent in 1952 and 2007")
+  labs(title = "GDP Per Capita vs. Continent in 1952 and 2007") +
+  scale_y_log10()
 ```
 
 **Observations**:

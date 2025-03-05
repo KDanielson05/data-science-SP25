@@ -308,7 +308,8 @@ gapminder %>%
   mutate(continent = fct_reorder(continent, gdpPercap)) %>% 
   ggplot(aes(continent, gdpPercap)) +
   geom_boxplot() +
-  labs(title = "GDP Per Capita vs. Continent")
+  labs(title = "GDP Per Capita vs. Continent") +
+  scale_y_log10()
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q2-task-1.png)<!-- -->
@@ -554,7 +555,8 @@ gapminder %>%
      size = 2
   ) +
   facet_wrap(~year) +
-  labs(title = "GDP Per Capita vs. Continent in 1952 and 2007")
+  labs(title = "GDP Per Capita vs. Continent in 1952 and 2007") +
+  scale_y_log10()
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q4-task-1.png)<!-- -->
