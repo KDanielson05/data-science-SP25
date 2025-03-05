@@ -1,7 +1,7 @@
 Gapminder
 ================
 Katherine Danielson
-2-15-2025
+2-15-2025 (Resubmitted 3-5-25)
 
 - [Grading Rubric](#grading-rubric)
   - [Individual](#individual)

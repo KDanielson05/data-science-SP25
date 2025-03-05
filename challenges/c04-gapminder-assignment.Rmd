@@ -1,7 +1,7 @@
 ---
 title: "Gapminder"
 author: "Katherine Danielson"
-date: 2-15-2025
+date: 2-15-2025 (Resubmitted 3-5-25)
 output:
   github_document:
     toc: true
