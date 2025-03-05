@@ -423,12 +423,12 @@ gapminder %>%
   15,000 for their GDP per capita. However, the outlier in Asia has a
   GDP per capita of well over 90,000–an over six-fold increase. It is
   interesting to notice that every continent minus Oceania has outliers.
-  Another thing of note is that Oceania, Africa and the Americas have
-  the least boxplot body variation while the body of the Asia and Europe
+  Another thing of note is that Oceania and the Americas have the least
+  boxplot body variation while the body of the Asia, Africa and Europe
   boxplots have a much bigger main box. This is indicative that there is
-  a wider, but more even spread of `gdpPercap` in both Asia and Europe
-  (Europe more so), while the spread of the `gdpPercap` in the other
-  three continents are rather centralized.
+  a wider, but more even spread of `gdpPercap` in both Asia , Africa and
+  Europe (Asia has the most variation), while the spread of the
+  `gdpPercap` in the other three continents are rather centralized.
 
 - When digging further into the data, it is discovered that Oceania only
   contains two different countries of analysis; thus, there can be no
@@ -446,12 +446,11 @@ gapminder %>%
   would not easily show the outliers, a scatterplot would be too busy,
   and a density plot simply did not work. Thus, my approach was to use a
   boxplot as it would show the median, and the first and third quartiles
-  as well as include outliers. This graph is not perfect as the outliers
-  majorly skew the scale so the boxplot bodies cannot be analyzed well;
-  however, it is better than many other graph options. An additional
-  difficulty with this graph is that you cannot tell what countries the
-  outliers belong to, so in q3, I will work to identify the outliers and
-  plot with them in q4.
+  as well as include outliers. In order to remedy the issue of scaling
+  and not being able to view the boxes well, I used a log10 scale on the
+  y-axis. An additional difficulty with this graph is that you cannot
+  tell what countries the outliers belong to, so in q3, I will work to
+  identify the outliers and plot with them in q4.
 
 ### **q3** You should have found *at least* three outliers in q2 (but possibly many more!). Identify those outliers (figure out which countries they are).
 
@@ -569,20 +568,20 @@ gapminder %>%
   the GDP per capita. This is likely due to the development of countries
   and the greater level of introduction of technologies, access to food,
   water, shelter and more. We see this in all countries, but especially
-  in Asia and Europe. It is important to note that while many continents
-  had an increase in the size of their overall box, only some had a
-  large shift in their median. Specifically, when looking at Africa and
-  Asia, there was a very limited shift in their median GDP per capita.
-  While both countries increased their median slightly, they both follow
-  a trend where they have a much longer upper whisker and Q3 but a very
-  low median. Comparatively, the Americas, Europe and Oceania all
-  shifted their medians up quite significantly. Overarchingly, the trend
-  of continent medians was the same in 1952 and 2007. That is, Africa
-  has the lowest median GDP per capita, then Asia, then the Americas,
-  then Europe, and lastly, Oceania has the highest. However, in 1952
-  compared to 2007 the median of one continent what generally higher
-  than the Q3 of another country, this is not the case in 2007 as there
-  is much more variability.
+  in Asia and Europe. Compared to what is seen when only using a normal
+  scaling rather than a log10 scale for the y-axis, we can see a shift
+  in the median of all of the continents. However, Africa has a very
+  limited shift in their median GDP per capita. One thing to note is
+  that the lower whisker and upper box of Africa grew–indicating that
+  between 1952 and 2007 there has been a greater level of distribution
+  appear between countries within the continent. Comparatively, Asia,
+  the Americas, Europe and Oceania all shifted their medians up quite
+  significantly. Overarchingly, the trend of continent medians was the
+  same in 1952 and 2007. That is, Africa has the lowest median GDP per
+  capita, then Asia, then the Americas, then Europe, and lastly, Oceania
+  has the highest. However, in 1952 compared to 2007 the median of one
+  continent what generally higher than the Q3 of another country, this
+  is not the case in 2007 as there is much more variability.
 - When looking out outliers, there are some pretty consistent outliers
   between 1952 and 2007, but some have become more “normal.” For
   example, Canada and the United States are still outliers for the
