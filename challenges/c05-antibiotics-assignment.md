@@ -1,7 +1,7 @@
 Antibiotics
 ================
 Katherine Danielson
-02-25-2025
+02-25-2025 Resubmitted (3-11-25)
 
 *Purpose*: Creating effective data visualizations is an *iterative*
 process; very rarely will the first graph you make be the most
@@ -247,14 +247,20 @@ your other visuals.
 ``` r
 df_antibiotics %>%
   mutate(bacteria = fct_reorder(bacteria, streptomycin)) %>%
-  ggplot(aes(streptomycin, bacteria)) +
+  ggplot(aes(bacteria, streptomycin)) +
   geom_point() +
-  facet_wrap(~gram) +
+  geom_hline(yintercept = 0.1, color = "blue") +
+  facet_wrap(~gram, scale = "free_x") +
   labs(
     title = "Gram and Effectiveness of Streptomycin on Select Bacteria",
-    y = "Bacteria Names",
-    x = "Streptomycin (MIC)"
-  )
+    y = "Streptomycin (MIC)",
+    x = "Bacteria Names"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    strip.text = element_text(size = 6.5)
+  ) +
+  scale_y_log10()
 ```
 
 ![](c05-antibiotics-assignment_files/figure-gfm/q1.4-1.png)<!-- -->
@@ -270,21 +276,15 @@ your other visuals.
 
 ``` r
 df_antibiotics %>% 
-  pivot_longer(
-    names_to = "Antibiotics",
-    values_to = "effectiveness",
-    c(penicillin, streptomycin, neomycin)
-  ) %>% 
-    mutate(bacteria = fct_reorder(bacteria, effectiveness)) %>%
-
-  ggplot(aes(effectiveness, bacteria)) +
+  ggplot(aes(neomycin, penicillin, color = gram)) +
   geom_point() +
-  facet_grid(~Antibiotics) +
+  geom_text_repel(aes(label = bacteria), size = 3, max.overlaps = 15) +  
   scale_x_log10() +
+  scale_y_log10() +
   labs(
-    title = "Effectiveness of Select Antibiotics on Bacteria",
-    y = "Bacteria Names",
-    x = "Effectiveness (MIC)"
+    title = "Neomycin and Penicillin MIC Values for 16 bacteria",
+    y = "Penicillin (MIC)",
+    x = "Neomycin (MIC)"
   )
 ```
 
@@ -436,3 +436,25 @@ df_antibiotics %>%
 ```
 
 ![](c05-antibiotics-assignment_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+``` r
+df_antibiotics %>% 
+  pivot_longer(
+    names_to = "Antibiotics",
+    values_to = "effectiveness",
+    c(penicillin, streptomycin, neomycin)
+  ) %>% 
+    mutate(bacteria = fct_reorder(bacteria, effectiveness)) %>%
+
+  ggplot(aes(effectiveness, bacteria)) +
+  geom_point() +
+  facet_grid(~Antibiotics) +
+  scale_x_log10() +
+  labs(
+    title = "Effectiveness of Select Antibiotics on Bacteria",
+    y = "Bacteria Names",
+    x = "Effectiveness (MIC)"
+  )
+```
+
+![](c05-antibiotics-assignment_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
