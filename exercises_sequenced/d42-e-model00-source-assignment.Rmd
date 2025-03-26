@@ -30,8 +30,8 @@ As descrinbed in the reading, the *cause-source quadrants* organize variability 
 
 ![Variability quadrants](./images/cause-source-quadrants.png)
 
-- *Cause* is an idea from statistical quality control (manufacturing); a *chance cause* is modeled as random, while an *assignable cause* is thought to be traceable and preventable.
-- *Source* is an idea from statistics education theory; this concept is explained further below.
+-   *Cause* is an idea from statistical quality control (manufacturing); a *chance cause* is modeled as random, while an *assignable cause* is thought to be traceable and preventable.
+-   *Source* is an idea from statistics education theory; this concept is explained further below.
 
 ## Real vs Erroneous Source
 
@@ -53,20 +53,25 @@ Other physical quantities exhibit both real and erroneous variability. Since the
 
 ## Scenarios
 
-### __q1__ Imagine the manufacturer selects one part and performs multiple non-destructive tensile tests on that single part, under similar conditions. The measured elasticity from each test is slightly different. Is this variability real or erroneous?
+### **q1** Imagine the manufacturer selects one part and performs multiple non-destructive tensile tests on that single part, under similar conditions. The measured elasticity from each test is slightly different. Is this variability real or erroneous?
 
-- real or erroneous?
-- (Why?)
+-   Erroneous
 
-### __q2__ Imagine the manufacturer selects multiple parts and---for each part---performs multiple non-destructive tensile tests, all under similar conditions. The measured elasticity values for each part are averaged to provide a more reliable estimate for each part. Upon comparing the parts, each averaged value is fairly different. Is this variability real or erroneous?
+-   The properties of the component are essentially set at manufacturing time; if multiple measurements on the same part return different values, then the variability is most likely an error introduced by the measurement process.
 
-- real or erroneous?
-- (Why?)
+### **q2** Imagine the manufacturer selects multiple parts and---for each part---performs multiple non-destructive tensile tests, all under similar conditions. The measured elasticity values for each part are averaged to provide a more reliable estimate for each part. Upon comparing the parts, each averaged value is fairly different. Is this variability real or erroneous?
 
-### __q3__ Now the manufacturer selects multiple parts and performs a destructive tensile test to characterize the strength of each part, with tests carried out under similar conditions. The measured strength values exhibit a fair amount of variability. Is this variability real or erroneous?
+-   Real
 
-- real or erroneous?
-- (Why?)
+-   The properties of the component are essentially set at manufacturing time; but no manufacturing process can create items with identical properties. Particularly if variability remains after erroneous variability has been controlled and eliminated (as described in the prompt), then the remaining variability is real.
+
+### **q3** Now the manufacturer selects multiple parts and performs a destructive tensile test to characterize the strength of each part, with tests carried out under similar conditions. The measured strength values exhibit a fair amount of variability. Is this variability real or erroneous?
+
+-   Without more information, it is impossible to say. It is likely a combination of real and erroneous sources.
+
+-   Real variability can arise from the manufacturing process, and erroneous variability can arise from the measurement. Since the measurement is destructive, we cannot use multiple measurements to control the erroneous variability.
+
+-   Note that it would generally be conservative to treat all of the variability in a strength as real; this would lead to parts that are heavier but safer than they need to be.
 
 ## Analyzing Data
 
@@ -87,9 +92,7 @@ df_meas <-
   )
 ```
 
-`id_sample` - represents an individual part
-`id_meas` - represents an individual measurement, with multiple carried out on each part
-`Y` - an individual measurement, identified by `id_sample` and `id_meas`
+`id_sample` - represents an individual part `id_meas` - represents an individual measurement, with multiple carried out on each part `Y` - an individual measurement, identified by `id_sample` and `id_meas`
 
 If we make a simple histogram, we can see that the measured value `Y` is highly variable:
 
@@ -101,7 +104,7 @@ df_meas %>%
 
 However, these data exhibit multiple *sources* of variability. The following questions will help you learn how to analyze data in light of this mixed variability.
 
-### __q4__ Inspect the following graph. Answer the questions under *observations* below.
+### **q4** Inspect the following graph. Answer the questions under *observations* below.
 
 ```{r q4-task}
 ## NOTE: No need to edit; run and inspect
@@ -118,15 +121,15 @@ df_meas %>%
   theme_minimal()
 ```
 
-*Observations*
-- Which is larger: The variability due to noise, or the variability due to deviation?
-  - (Your response here)
+*Observations* - Which is larger: The variability due to noise, or the variability due to deviation?
 
-### __q5__ Imagine `Y` represents the measured strength of the cast steel. Would it be safe to simply average all of the values and use that as the material strength for design?
+Based on the visual, the variability due to deviation is obviously much larger than the variability due to noise: There is considerably more scatter between the red dots (each sample’s measurement mean), than there is scatter around each red dot.
 
-- (Your response here)
+### **q5** Imagine `Y` represents the measured strength of the cast steel. Would it be safe to simply average all of the values and use that as the material strength for design?
 
-### __q6__ Compute the `0.1` quantile of the `Y` measurements. Would this be a conservative value to use as a material strength for design?
+-   No, it would be foolish to take the average of all these strength measurements and use that value for design. In fact, in aircraft design, this approach would be *illegal* according to [Federal Airworthiness Regulations](https://www.law.cornell.edu/cfr/text/14/25.613).
+
+### **q6** Compute the `0.1` quantile of the `Y` measurements. Would this be a conservative value to use as a material strength for design?
 
 ```{r q6-task}
 ## TODO: Compute the 0.01 quantile of the `Y` values; complete the code below
@@ -136,7 +139,10 @@ Y_mean <-
   summarize(Y_mean = mean(Y)) %>%
   pull(Y_mean)
 
-Y_lo <- NA_real_ # Complete the quantile calculation
+Y_lo <- # Complete the quantile calculation
+  df_meas %>%
+  summarize(Y_lo = quantile(Y, p = 0.1)) %>%
+  pull(Y_lo)
 
 # Compare the values
 Y_mean
@@ -154,12 +160,12 @@ print("Nice!")
 
 *Observations*
 
-- How does `Y_lo` compare with `Y_mean`?
-  - (Your response here)
-- Would the 10% quantile `Y_lo` be a conservative material strength for design?
-  - (Your response here)
+-   How does `Y_lo` compare with `Y_mean`?
+    -   Y_lo is much smaller than Y_mean
+-   Would the 10% quantile `Y_lo` be a conservative material strength for design?
+    -   Yes, the 10% quantile would be a conservative material strength value. This would still not be in compliance with [FAA regulations](https://arc.aiaa.org/doi/full/10.2514/1.J059578) for material properties, but it is certainly better than using the (sample) mean.
 
-### __q7__ The following code reduces the variability due to noise before computing the quantile. Run the code below, and answer the questions under *Observations* below.
+### **q7** The following code reduces the variability due to noise before computing the quantile. Run the code below, and answer the questions under *Observations* below.
 
 ```{r q7-task}
 ## NOTE: No need to edit; run and answer the questions below
@@ -177,19 +183,21 @@ Y_lo_improved
 
 *Observations*
 
-- Is the new value `Y_lo_improved` more or less conservative than the original `Y_lo`?
-  - (Your response here)
-- What features about the data collection / dataset `df_meas` enable the calculation of `Y_lo_improved`?
-  - (Your response here)
-- Measuring the strength of a part is a *destructive* experiment. Would it be possible to gather a dataset like `df_meas` in reality?
-  - (Your response here)
-- For what real properties (material, or otherwise) would it be possible to collect data like `df_meas`?
-  - (Your response here)
+-   Is the new value `Y_lo_improved` more or less conservative than the original `Y_lo`?
+    -   The new value `Y_lo_improved` is less conservative, but it is also more efficient. This value reduces the effects of noise, which focuses on the design-relevant deviation present in the material property of interest.
+-   What features about the data collection / dataset `df_meas` enable the calculation of `Y_lo_improved`?
+    -   To compute `Y_lo_improved`, we needed multiple observations `id_meas` on each sample `id_sample`.
+-   Measuring the strength of a part is a *destructive* experiment. Would it be possible to gather a dataset like `df_meas` in reality?
+    -   In reality, we cannot collect a dataset like `df_meas` for strength properties; this is because we can’t collect more than one strength measurement per sample!
+-   For what real properties (material, or otherwise) would it be possible to collect data like `df_meas`?
+    -   It is possible to collect repeated observations with any non-destructive measurement. For material properties, this could include the elasticity, poisson ratio, density, etc.
 
 *Aside*: This kind of statistical experimental design is sometimes called a [nested design](https://online.stat.psu.edu/stat503/lesson/14/14.1).
 
 <!-- include-exit-ticket -->
+
 # Exit Ticket
+
 <!-- -------------------------------------------------- -->
 
 Once you have completed this exercise, make sure to fill out the **exit ticket survey**, [linked here](https://docs.google.com/forms/d/e/1FAIpQLSeuq2LFIwWcm05e8-JU84A3irdEL7JkXhMq5Xtoalib36LFHw/viewform?usp=pp_url&entry.693978880=e-model00-source-assignment.Rmd).
