@@ -1,7 +1,7 @@
 COVID-19
 ================
 Katherine Danielson
-03-03-2025
+03-03-2025 Resubmitted 03-30-2025
 
 - [Grading Rubric](#grading-rubric)
   - [Individual](#individual)
@@ -596,6 +596,7 @@ include in your summaries,* and justify why!
 ``` r
 ## TASK: Compute mean and sd for cases_per100k and deaths_per100k
 df_normalized %>%
+  filter(date >= as.Date("2022-01-01") & date <= as.Date("2022-06-01")) %>%
   summarise(
     mean_cases = mean(cases_per100k, na.rm = TRUE),
     sd_cases = sd(cases_per100k, na.rm = TRUE),
@@ -607,15 +608,21 @@ df_normalized %>%
     ## # A tibble: 1 × 4
     ##   mean_cases sd_cases mean_deaths sd_deaths
     ##        <dbl>    <dbl>       <dbl>     <dbl>
-    ## 1      9975.    8449.        174.      159.
+    ## 1     23100.    6092.        350.      154.
 
 - Which rows did you pick?
   - I made sure to filter out the values that had NA values for
-    `cases_per100k`, `deaths_per100k` or both.
+    `cases_per100k`, `deaths_per100k` or both. I additionally chose to
+    filter to the dates from February 1st of 2022 to May 15th of 2022.
 - Why?
   - If I did not do so, the results would come inaccurate and show NA
     for the mean and sd. Thus, in order to properly calculate and return
-    a value they were taken out.
+    a value they were taken out. These dates include some of the peak
+    times of COVID and I wanted to better understand what the mean and
+    standard deviation for both cases and deaths looked like over these
+    few months. I filtered down the dates so that it would limit high
+    variance in cases and deaths and would allow for a more accurate
+    understanding of what the peak of COVID looked like.
 
 ### **q7** Find and compare the top 10
 
@@ -685,13 +692,13 @@ df_normalized %>%
 - Compared to the mean values computed in q6, the top ten values for
   `cases_per100k` and `deaths_per100k` are much higher. For example, the
   lowest of the top ten `cases_per100k` county Kusilvak Census Area is
-  nearly five times higher than that of the mean. The highest value for
+  ~2.15 times higher than that of the mean. The highest value for
   `cases_per100k` is from the `county` Loving where the value is
   192156.86 – they had nearly double the cases compared to their
   `population` (this could be due to people becoming positive multiple
   times or people traveling in and getting COVID or another reason). The
   `deaths_per100k` follows a similar trend, with the ten top highest
-  counties with `deaths_per100k` reporting values that are ~5.5 to ~7.8
+  counties with `deaths_per100k` reporting values that are ~2.7 to ~3.89
   times the mean value. This large variation can be expected as these
   are the top values, not anything near the mean. Further, they exceed
   that of the standard deviation of data, suggesting that these values
