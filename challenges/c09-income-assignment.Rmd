@@ -1,7 +1,7 @@
 ---
 title: "US Income"
 author: "Katherine Danielson"
-date: 04-03-2025
+date: 04-03-2025         Resubmitted 04-14-2025
 output:
   github_document:
     toc: true
@@ -312,6 +312,7 @@ df_data %>%
   geom_point(alpha = 0.15, color = "blue") +
   geom_smooth(method = "loess", color = "red", se = FALSE) +  # Trend line
   scale_x_log10() +
+  scale_y_log10() +
   labs(
     title = "Relation Between Standard Error and Population", 
     x = "Population Estimate",
