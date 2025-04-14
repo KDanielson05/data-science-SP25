@@ -1,7 +1,7 @@
 US Income
 ================
 Katherine Danielson
-04-03-2025
+04-03-2025 Resubmitted 04-14-2025
 
 - [Grading Rubric](#grading-rubric)
   - [Individual](#individual)
@@ -604,6 +604,7 @@ df_data %>%
   geom_point(alpha = 0.15, color = "blue") +
   geom_smooth(method = "loess", color = "red", se = FALSE) +  # Trend line
   scale_x_log10() +
+  scale_y_log10() +
   labs(
     title = "Relation Between Standard Error and Population", 
     x = "Population Estimate",
