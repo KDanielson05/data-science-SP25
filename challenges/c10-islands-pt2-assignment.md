@@ -1,7 +1,7 @@
 The Islands, Part 2: Study
 ================
 Katherine Danielson, Olivia Smith, Dakota Chang, Cooper Penkava
-04-10-2025
+04-10-2025 Revised 04-14-2025
 
 - [Grading Rubric](#grading-rubric)
   - [Individual](#individual)
@@ -129,6 +129,9 @@ study is observational or experimental.
 - How are farming occupation and islander worth related for the
   residents of Helvig?
 
+  - Null hypothesis: There is no statistical difference between the
+    `Worth` in various farming `Type`s in Helvig.
+
 - **We believe that certain farming occupations increase islander
   individual worth.** We are also investigating gender and age in
   conjunction to isolate the effects of farming occupation and worth.
@@ -156,9 +159,9 @@ click on their name, and note their gender, age and worth. This data
 will then go into a spreadsheet that we will later turn into a csv file
 for data analysis. 
 
-As this is an observational study, not an experimental one, the
-introduction of bias is very limited as we are simply collecting four
-pieces of data from each person.
+To work to limit bias in the sampling plan (as most bias in
+observational studies is from sample) we are choosing to use a
+proportional stratified sample.
 
 - How will you ensure the data is representative of your chosen
   population?
@@ -272,8 +275,8 @@ df_pop %>%
 - `Type`: This identifies the type of farmer. There are 5 different
   types of farmers: Dairy, Oat, Pig, Poultry, and Sheep.
 
-  - There are 10 Dairy farmers, 11 Sheep farmers, 15 Poultry farmers, 25
-    Pig farmers, and 31 Oat farmers.
+  - As we see from the table, there are 10 Dairy farmers, 11 Sheep
+    farmers, 15 Poultry farmers, 25 Pig farmers, and 31 Oat farmers.
 
 - We used the data collected here to create a proportional stratified
   sample. This stratified sample has an EDA performed as well below.
@@ -529,11 +532,15 @@ summary(anova_result_WT)
 
 *Observations*
 
-- As illustrated by the anova test there is no statistically significant
+- As illustrated by the ANOVA test there is no statistically significant
   difference in `Worth` between farmer `Type`. The F-value is 0.169
   showing very little difference between group means compared to the
-  variation within groups. The p-value of 0.953 shows there is no
-  statistical significance between `Type` and `Worth`.
+  variation within groups. When looking back at the null hypothesis
+  (“There is no statistical difference between the `Worth` in various
+  farming `Type`s in Helvig.”), we fail to reject it. This is because
+  when referencing the p-value of 0.953, there is no evidence of a
+  (statistically) significant difference between `Type` and `Worth`
+  between the different farming types on Helvig.
 - While there is not a statistically significant difference between
   farming-type median net `Worth`s, there is a trend in the median
   earnings. Oat farming generally has the lowest median `Worth` – coming

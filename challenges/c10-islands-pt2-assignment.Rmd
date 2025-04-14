@@ -1,7 +1,7 @@
 ---
 title: "The Islands, Part 2: Study"
 author: "Katherine Danielson, Olivia Smith, Dakota Chang, Cooper Penkava"
-date: 04-10-2025
+date: 04-10-2025      Revised 04-14-2025
 output:
   github_document:
     toc: true
@@ -88,6 +88,8 @@ The Islands allows you to ask islanders to complete tasks. If you just take meas
 
 -   How are farming occupation and islander worth related for the residents of Helvig?
 
+    -   Null hypothesis: There is no statistical difference between the `Worth` in various farming `Type`s in Helvig.
+
 -   **We believe that certain farming occupations increase islander individual worth.** We are also investigating gender and age in conjunction to isolate the effects of farming occupation and worth.
 
 #### **Sampling plan**
@@ -98,7 +100,7 @@ There are five farming occupations in Helvig: Dairy, Oats, Pigs, Poultry, and Sh
 
 We will then use R’s random number generator with a seed of 101 to select the individuals for our sample based on assigned numbers. We are going to choose 44 random islanders, stratified by the proportions of the population that each type of farming makes up within the whole of Helvig farmers. After the generation of these 44 stratified random numbers, we will collect the data for each assigned person–occupation, worth, gender, and age. To do so, we will go to the Helvig Bureau, go to “Registers,” find each individual’s name under their farming occupation, click on their name, and note their gender, age and worth. This data will then go into a spreadsheet that we will later turn into a csv file for data analysis. 
 
-As this is an observational study, not an experimental one, the introduction of bias is very limited as we are simply collecting four pieces of data from each person.
+To work to limit bias in the sampling plan (as most bias in observational studies is from sample) we are choosing to use a proportional stratified sample.
 
 -   How will you ensure the data is representative of your chosen population?
 
@@ -146,7 +148,7 @@ df_pop %>%
 
 -   `Type`: This identifies the type of farmer. There are 5 different types of farmers: Dairy, Oat, Pig, Poultry, and Sheep.
 
-    -   There are 10 Dairy farmers, 11 Sheep farmers, 15 Poultry farmers, 25 Pig farmers, and 31 Oat farmers.
+    -   As we see from the table, there are 10 Dairy farmers, 11 Sheep farmers, 15 Poultry farmers, 25 Pig farmers, and 31 Oat farmers.
 
 -   We used the data collected here to create a proportional stratified sample. This stratified sample has an EDA performed as well below.
 
@@ -303,7 +305,7 @@ summary(anova_result_WT)
 
 *Observations*
 
--   As illustrated by the anova test there is no statistically significant difference in `Worth` between farmer `Type`. The F-value is 0.169 showing very little difference between group means compared to the variation within groups. The p-value of 0.953 shows there is no statistical significance between `Type` and `Worth`.
+-   As illustrated by the ANOVA test there is no statistically significant difference in `Worth` between farmer `Type`. The F-value is 0.169 showing very little difference between group means compared to the variation within groups. When looking back at the null hypothesis ("There is no statistical difference between the `Worth` in various farming `Type`s in Helvig."), we fail to reject it. This is because when referencing the p-value of 0.953, there is no evidence of a (statistically) significant difference between `Type` and `Worth` between the different farming types on Helvig.
 -   While there is not a statistically significant difference between farming-type median net `Worth`s, there is a trend in the median earnings. Oat farming generally has the lowest median `Worth` – coming in below 2500. However, while Oat farming produces the lowest median new `Worth`, it also contains the highest outlier. Dairy, Sheep, and Pig farming all have very similar median `Worth` values, however, Dairy makes the lowest median of the three, then Sheep, then Pig. Poultry has a decently higher median `Worth`, but has a smaller sample size compared to that of Oat and Pig.
 -   All types of farming have quite a large distribution of individual worth. Specifically, the largest distribution of `Worth` appears to be within Oat and Pig farming. It should be noted that these two Types of farming had the largest proportional stratified sample size at 15 and 12, respectively. The remaining three have smaller distributions, with Poultry having the smallest distribution. Poultry had a smaller sample size (7), but has the highest median net Worth and has 5 very concentrated points. It would be interesting to look at the total population to see if this trend remains the same.
     -   One other interesting thing of note in this graph is the concentration of individuals within Oat and Pig farming (the two largest distributions). Both of them appear to have a lower and upper cluster within the box plot. It would be interesting to see what possibly causes this clustering–whether it be age, gender, etc..
