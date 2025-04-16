@@ -1,7 +1,7 @@
 ---
 title: "Regression Case Study: PSAAP II"
 author: "Katherine Danielson"
-date: 04-10-2025
+date: 04-15-2025
 output:
   github_document:
     toc: true
@@ -92,14 +92,13 @@ sapply(df_psaap, function(x) sum(is.na(x)))  # Count missing values per column
 
 -   Most variables appear to be numeric and continuous (ex. `mu_f`, `eps_p`, `d_p`), with ranges and quartiles that suggest some skew.
 
-    -    Potential skewed variables:
-        -   `mu_f`: Wide range, max (±370,000+), indicating possible outliers or high variance.
+    -   Potential skewed variables: - `mu_f`: Wide range, max (±370,000+), indicating possible outliers or high variance.
+    -   `d_p`: Small values in scientific notation, may require log transformation if used in modeling.
+    -   `W`: Includes negative values and appears to span a large range.
 
-        -   `d_p`: Small values in scientific notation, may require log transformation if used in modeling.
+-   Variables like `mu_f`, `I_0`, `eps_p`, `W`, and `d_p` may contain extreme outliers based on their range vs. interquartile spread.
 
-        -   `W`: Includes negative values and appears to span a large range.
-    -   Variables like `mu_f`, `I_0`, `eps_p`, `W`, and `d_p` may contain extreme outliers based on their range vs. interquartile spread.
-        -   Example: `mu_f` has a median of \~2.02 but a max of 370.5
+    -   Example: `mu_f` has a median of \~2.02 but a max of 370.5
 
 -   There are additionally a lot of scale differences between variables – `W` is in the tens, `mu_f` in thousands, `eps_p` less than 1.
 
@@ -387,22 +386,51 @@ pr_level <- 0.8
 #        use the validation data to check your uncertainty estimates, and 
 #        make a recommendation on a *dependable range* of values for T_norm
 #        at the point `df_design`
-fit_q6 <- NA
+fit_q6 <- 
+  df_train %>% 
+  lm(formula = T_norm ~ x + L + W + U_0)
+
+df_design_pred <- 
+  df_design %>% 
+  add_uncertainties(
+    fit_q6,
+    interval = "prediction",
+    level = pr_level, # this is 0.8,
+    prefix = "pi"
+  ) 
+
+df_valid_pred <- 
+  df_validate %>% 
+  add_uncertainties(
+    fit_q6,
+    interval = "prediction",
+    level = pr_level,
+    prefix = "pi"
+  )
+
+df_valid_pred %>% 
+  summarize(
+    fraction_in = mean((pi_lwr <= T_norm) & (T_norm <= pi_upr))
+  )
+
+df_design_pred %>% 
+  select(pi_lwr, pi_fit, pi_upr)
+
 
 ```
 
 **Recommendation**:
 
 -   How much do you trust your model? Why?
-    -   (Your response here)
+    -   I trust my model loosely but believe it could be improved. With the validation data, 93.33% of all predicted data points are in the range. However, as they are trying for only one prototype rather than a group and being too high or low with the `T_norm` could fully ruin the prototype, it would be beneficial if the `fraction_in` was higher.
 -   What kind of interval---confidence or prediction---would you use for this task, and why?
-    -   (Your response here)
+    -   I would use a prediction interval because the team is interested in the likely range of individual future outcomes of `T_norm`, not the average/mean like the confidence interval would. This accounts for both model uncertainty and inherent variation in future data.
 -   What fraction of validation cases lie within the intervals you predict? (NB. Make sure to calculate your intervals *based on the validation data*; don't just use one single interval!) How does this compare with `pr_level`?
-    -   (Your response here)
+    -   As illustrated by the `fraction_in` variable, 93.33% of the validation cases lie within the intervals. Comparatively, this is higher than the `pr_level` of 0.8 or 80%.
 -   What interval for `T_norm` would you recommend the design team to plan around?
-    -   (Your response here)
+    -   One such recommendation for planning could be to utilize the prediction intervals created from the model. This would place the lower interval of `T_norm` at 1.45685 and the upper at 2.296426. To make it slightly more accurate, it may be a beneficial idea to shrink these boundaries even further.
 -   Are there any other recommendations you would provide?
-    -   (Your response here)
+    -   One recommendation would be to increase the `pr_level` to 0.9 or even 0.95 to make the `pi_lwr` and `pi_upr` ranges smaller and increase the `fraction_in` percentage. This would allow for an increasingly accurate design where there would be a higher trust in the model. Another method I would suggest would be model refinement. Explore additional variables or interactions that might improve the model's accuracy. Conduct further analysis to identify any potential improvements. This could look like fixing more variables in `df_design` so that tighter control and model accuracy could be achieved. Additionally, including regular validation would be beneficial as well. Continuously validating the model with new data to ensure its reliability over time. This will help in maintaining the accuracy and dependability of the predictions.
 
 *Bonus*: One way you could take this analysis further is to recommend which other variables the design team should tightly control. You could do this by fixing values in `df_design` and adding them to the model. An exercise you could carry out would be to systematically test the variables to see which ones the design team should more tightly control.
 
