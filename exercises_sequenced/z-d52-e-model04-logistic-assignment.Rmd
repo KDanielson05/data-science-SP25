@@ -24,6 +24,7 @@ library(broom)
 *Background*: This exercise's data comes from the UCI Machine Learning Database; specifically their [Heart Disease Data Set](https://archive.ics.uci.edu/ml/datasets/Heart+Disease). These data consist of clinical measurements on patients, and are intended to help study heart disease.
 
 ## Setup
+
 <!-- ------------------------- -->
 
 Note: The following chunk contains *a lot of stuff*, but you already did this in e-data13-cleaning!
@@ -155,17 +156,22 @@ df_data <-
 
 The last step of data setup is up to you!
 
-### __q1__ Perform a train-validate split of `df_data`. Make sure to *shuffle* the data when splitting, and ensure that `df_train` and `df_validate` together contain the entire dataset.
+### **q1** Perform a train-validate split of `df_data`. Make sure to *shuffle* the data when splitting, and ensure that `df_train` and `df_validate` together contain the entire dataset.
 
 ```{r q1-task}
 n_train <- 200
 
 ## TODO: Perform a test-validate split
 df_train <-
-  df_data
+  df_data %>%
+  slice_sample(n = n_train)
 
 df_validate <-
-  df_data
+  anti_join(
+    df_data,
+    df_train,
+    by = "rowid"
+  )
 ```
 
 Use the following to check your code.
@@ -192,6 +198,7 @@ print("Well done!")
 ```
 
 ## Logistic Regression
+
 <!-- ------------------------- -->
 
 As the required video introduced, logistic regression bears some resemblance to linear regression. However, rather than predicting *continuous* outcomes (such as the price of a diamond), we will instead predict a *binary* outcome (in the present exercise: whether or not a given patient has heart disease).
@@ -243,11 +250,12 @@ tibble(p = seq(0, 1, length.out = 100)) %>%
 This curve (the inverse-logit) is the one we'll stretch and shift in order to fit a logistic regression.
 
 ## A Worked Example
+
 <!-- ------------------------- -->
 
 The following code chunk fits a logistic regression model to your training data, predicts classification probabilities on the validation data, and visualizes the results so we can assess the model. You'll practice carrying out these steps soon: First let's practice interpreting a logistic regression model's outputs.
 
-### __q2__ Run the following code and study the results. Answer the questions under *observations* below.
+### **q2** Run the following code and study the results. Answer the questions under *observations* below.
 
 ```{r q2-task}
 ## NOTE: No need to edit; just run and answer the questions below
@@ -286,9 +294,11 @@ df_basic %>%
 
 **Observations**:
 
-- Suppose we chose to classify predictions with probability `pr_heart_disease > 0.5` as persons having heart disease, and those below `pr_heart_disease <= 0.5` as not having heart disease. Would this model perform well or poorly?
-  - *Hint*: Think about how many persons with `heart_disease` would be correctly identified as having the disease, and how many would truly have `heart_disease` but whom we would not detect.
-- The probabilities are all at one of two levels; what about the model structure `heart_disease ~ sex` explains this behavior?
+-   Suppose we chose to classify predictions with probability `pr_heart_disease > 0.5` as persons having heart disease, and those below `pr_heart_disease <= 0.5` as not having heart disease. Would this model perform well or poorly?
+    -   *Hint*: Think about how many persons with `heart_disease` would be correctly identified as having the disease, and how many would truly have `heart_disease` but whom we would not detect.
+    -   With a threshold at `0.5` the model would perform poorly: it appears we would miss miss a large number of people with heart disease.
+-   The probabilities are all at one of two levels; what about the model structure `heart_disease ~ sex` explains this behavior?
+    -   This model only considers the binary variable `sex`; thus the model only predicts two probability values, one for female and one for male.
 
 In the next modeling exercise we'll discuss how to *quantitatively* assess the results of a classifier. For the moment, know that our objective is usually to maximize the rates of true positives (TP) and true negatives (TN). In our example, true positives are when we correctly identify the presence of heart disease, and true negatives are when we correctly flag the absence of heart disease. Note that we can make errors in "either direction": a false positive (FP) or a false negative (FN), depending on the underlying true class.
 
@@ -314,13 +324,18 @@ df_basic %>%
 These numbers don't mean a whole lot on their own; we'll use them to compare performance across models. Next you'll practice using R functions to carry out logistic regression for classification, and build a model to compare against this basic one.
 
 ## Doing Logistic Regression
+
 <!-- ------------------------- -->
 
-### __q3__ Using the code from q2 as a pattern, fit a logistic regression model to `df_train`.
+### **q3** Using the code from q2 as a pattern, fit a logistic regression model to `df_train`.
 
 ```{r q3-task}
 ## TODO: Fit a logistic regression; choose your own predictor variables
-fit_q3 <- NA
+fit_q3 <- glm(
+  formula = heart_disease ~ . - num,
+  data = df_train,
+  family = "binomial"
+)
 ```
 
 Use the following to check your work.
@@ -336,13 +351,15 @@ assertthat::assert_that(dim(
 print("Nice!")
 ```
 
-### __q4__ Recall that logistic regression predicts log-odds-ratio values; add these predictions to `df_validate` and convert them to probabilities `pr_heart_disease`.
+### **q4** Recall that logistic regression predicts log-odds-ratio values; add these predictions to `df_validate` and convert them to probabilities `pr_heart_disease`.
 
 ```{r q4-task}
 ## TODO: Predict with your model fit_q3; convert log_odds_ratio to probabilities
 ##       using inv.logit(), assign this to the column pr_heart_disease
 df_q4 <-
-  df_validate
+  df_validate %>%
+  add_predictions(fit_q3, var = "log_odds_ratio") %>%
+  mutate(pr_heart_disease = inv.logit(log_odds_ratio))
 
 ## Plot the predicted probabilities and actual classes
 df_q4 %>%
@@ -374,11 +391,11 @@ assertthat::assert_that(all(
 print("Excellent!")
 ```
 
-### __q5__ Inspect your graph from q4 and choose a threshold for classification. Compare your count of true positives (TP) and true negatives (TN) to the model above.
+### **q5** Inspect your graph from q4 and choose a threshold for classification. Compare your count of true positives (TP) and true negatives (TN) to the model above.
 
 ```{r q5-task}
 ## TODO: Choose a threshold value
-pr_threshold <- NA_real_
+pr_threshold <- 0.7
 
 ## NOTE: No need to edit this; just inspect the results
 df_q4 %>%
@@ -398,11 +415,15 @@ df_q4 %>%
 
 **Observations**:
 
-- How does your classification model compare to `fit_basic` in terms of true positives (TP)?
-- How does your classification model compare to `fit_basic` in terms of true negatives (TN)?
+-   How does your classification model compare to `fit_basic` in terms of true positives (TP)?
+    -   My model ended up having fewer true positives.
+-   How does your classification model compare to `fit_basic` in terms of true negatives (TN)?
+    -   My model ended up with many more true negatives.
 
 <!-- include-exit-ticket -->
+
 # Exit Ticket
+
 <!-- -------------------------------------------------- -->
 
 Once you have completed this exercise, make sure to fill out the **exit ticket survey**, [linked here](https://docs.google.com/forms/d/e/1FAIpQLSeuq2LFIwWcm05e8-JU84A3irdEL7JkXhMq5Xtoalib36LFHw/viewform?usp=pp_url&entry.693978880=e-model04-logistic-assignment.Rmd).
